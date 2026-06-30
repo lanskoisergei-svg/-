@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Меню Кофейни</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Montserrat',sans-serif;
+}
+
+body{
+overflow:hidden;
+background:#000;
+}
+
+.slider{
+position:relative;
+width:100vw;
+height:100vh;
+}
+
+.slide{
+position:absolute;
+inset:0;
+
+opacity:0;
+visibility:hidden;
+
+transition:opacity 1.5s ease;
+}
+
+.slide.active{
+opacity:1;
+visibility:visible;
+z-index:2;
+}
+
+.slide img{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:cover;
+
+animation:zoom 10s linear forwards;
+}
+
+@keyframes zoom{
+from{
+transform:scale(1);
+}
+to{
+transform:scale(1.12);
+}
+}
+
+.overlay{
+position:absolute;
+inset:0;
+
+background:
+linear-gradient(
+90deg,
+rgba(0,0,0,.88) 0%,
+rgba(0,0,0,.55) 45%,
+rgba(0,0,0,.15) 100%
+);
+}
+
+.content{
+position:absolute;
+left:7%;
+top:50%;
+
+transform:translateY(-50%);
+max-width:700px;
+
+z-index:5;
+
+opacity:0;
+}
+
+.slide.active .content{
+animation:textIn 1.3s forwards;
+}
+
+@keyframes textIn{
+
+from{
+opacity:0;
+transform:
+translateY(-50%)
+translateX(-80px);
+}
+
+to{
+opacity:1;
+transform:
+translateY(-50%)
+translateX(0);
+}
+}
+
+.category{
+
+display:inline-block;
+
+padding:12px 24px;
+
+background:rgba(255,255,255,.12);
+
+backdrop-filter:blur(12px);
+
+border-radius:40px;
+
+color:#fff;
+
+font-size:20px;
+font-weight:700;
+letter-spacing:3px;
+
+margin-bottom:30px;
+}
+
+h1{
+font-size:90px;
+font-weight:900;
+line-height:1;
+color:#fff;
+
+margin-bottom:25px;
+
+text-shadow:0 0 25px rgba(255,255,255,.25);
+}
+
+p{
+font-size:32px;
+line-height:1.5;
+color:#fff;
+}
+
+.logo{
+
+position:absolute;
+top:15px;
+right:50px;
+
+z-index:20;
+
+font-size:36px;
+font-weight:900;
+color:white;
+
+letter-spacing:4px;
+}
+
+.progress{
+
+position:absolute;
+bottom:0;
+left:0;
+
+height:8px;
+width:100%;
+
+background:rgba(255,255,255,.15);
+
+z-index:50;
+}
+
+.progress-bar{
+
+height:100%;
+width:0;
+
+background:white;
+
+animation:progress 10s linear infinite;
+}
+
+@keyframes progress{
+
+from{
+width:0;
+}
+
+to{
+width:100%;
+}
+}
+
+.big {
+    font-size:50px ;
+}
+
+.big2 {
+    font-size:30px ;
+}
+
+.big3 {
+    font-size:40px ;
+}
+
+.flash{
+
+position:fixed;
+inset:0;
+
+background:white;
+
+opacity:0;
+
+pointer-events:none;
+
+z-index:999;
+}
+
+.flash.active{
+animation:flash 0.4s ease;
+}
+
+@keyframes flash{
+
+0%{
+opacity:0;
+}
+
+50%{
+opacity:.7;
+}
+
+100%{
+opacity:0;
+}
+}
+
+.clock{
+
+position:absolute;
+
+bottom:40px;
+right:50px;
+
+font-size:40px;
+font-weight:700;
+color:white;
+
+z-index:20;
+}
+
+.menu{
+
+position:absolute;
+
+right:7%;
+top:50%;
+
+transform:translateY(-50%);
+
+width:500px;
+
+z-index:5;
+
+color:white;
+
+}
+
+.item{
+
+display:flex;
+
+justify-content:space-between;
+
+font-size:20px;
+
+font-weight:900;
+
+padding:12px 0;
+
+border-bottom:1px solid rgba(255,255,255,.2);
+
+}
+
+
+.nav{
+
+position:absolute;
+top:50%;
+
+transform:translateY(-50%);
+
+width:70px;
+height:70px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:42px;
+font-weight:700;
+
+color:#fff;
+
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(10px);
+
+border-radius:50%;
+
+cursor:pointer;
+
+z-index:100;
+
+transition:.3s;
+
+user-select:none;
+
+}
+
+.nav:hover{
+
+background:rgba(255,255,255,.25);
+
+transform:translateY(-50%) scale(1.08);
+
+}
+
+.prev{
+
+left:30px;
+
+}
+
+.next{
+
+right:30px;
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="logo">
+Слушай Покушай 
+</div>
+
+<div class="clock" id="clock"></div>
+
+<div class="flash"></div>
+
+<div class="slider">
+
+    <div class="nav prev">&#10094;</div>
+<div class="nav next">&#10095;</div>
+
+<div class="slide active">
+<img src="кофе-фон.png">
+<div class="overlay"></div>
+
+<div class="content">
+<div class="category">КОФЕ</div>
+<h1>Кофейная карта</h1>
+<p>Эспрессо • Американо • Капучино • Латте • Раф</p>
+</div>
+<div class="menu">
+
+    <div class="item">
+        <span>Латте</span>
+        <span>0,3 / 0,4мл 220₽ / 250₽</span>
+    </div>
+
+    <div class="item">
+        <span>Айс-Латте </span>
+        <span>(0,3 / 0,4 мл) — 250P / 300P</span>
+    </div>
+
+    <div class="item">
+        <span>Матча-Латте</span>
+        <span>(0,3 / 0,4 мл) — 300P / 350P</span>
+    </div>
+
+    <div class="item">
+        <span>Капучино </span>
+        <span>(0,3 / 0,4 мл) — 220P / 250P</span>
+    </div>
+
+    <div class="item">
+        <span>Айс-Капучино</span>
+        <span>(0,3 / 0,4 мл) — 250P / 300P</span>
+    </div>
+
+    <div class="item">
+        <span>Американо</span>
+        <span>(0,2 / 0,3 мл) — 200P / 250P</span>
+    </div>
+
+    <div class="item">
+        <span>Эспрессо</span>
+        <span>(0,2 мл) — 160P</span>
+    </div>
+
+    <div class="item">
+        <span>Двойной эспрессо </span>
+        <span>(0,2 мл) — 180P</span>
+    </div>
+
+    <div class="item">
+        <span>Раф</span>
+        <span>(0,3 / 0,4 мл) — 300P / 350P</span>
+    </div>
+
+    <div class="item">
+        <span>Глясе</span>
+        <span>(0,3 / 0,4 мл) — 300P / 350P</span>
+    </div>
+
+    <div class="item">
+        <span>Флэт Уайт</span>
+        <span>(0,3 / 0,4 мл) — 200P / 250P</span>
+    </div>
+
+    <div class="item">
+        <span>Фраппучино</span>
+        <span>(0,3 / 0,4 мл) — 300P / 350P</span>
+    </div>
+
+    <div class="item">
+        <span>Макиато </span>
+        <span>(0,3 / 0,4 мл) — 250P / 300P</span>
+    </div>
+
+</div>
+</div>
+
+<div class="slide">
+<img src="напитки.png">
+<div class="overlay"></div>
+
+<div class="content">
+<div class="category">АВТОРСКИЕ НАПИТКИ</div>
+<h1>Фирменные рецепты</h1>
+<p>Латте Орео • Фраппе • Авторские сочетания</p>
+</div>
+<div class="menu">
+
+    <div class="item">
+        <span class="">Латте Орео</span>
+        <span class="">(0,3 / 0,4 мл) — 300P / 350P</span>
+    </div>
+
+    <div class="item">
+        <span>Фраппе</span>
+        <span> (0,3 / 0,4мл)300P / 350P</span>
+    </div>
+
+    <div class="item">
+        <span>Мохито</span>
+        <span>350P</span>
+    </div>
+
+    <div class="item">
+        <span>Милкшейк</span>
+        <span>(0,3 / 0,4 мл) — 250P / 350P</span>
+    </div>
+
+
+    <div class="item">
+        <span>Смузи</span>
+        <span>(0,3 / 0,4 мл) — 300P / 400P</span>
+    </div>
+
+    <div class="item">
+        <span>Фреш апельсиновый </span>
+        <span>300P</span>
+    </div>
+
+    <div class="item">
+        <span>Бабл-ти </span>
+        <span>350P</span>
+    </div>
+
+    <div class="item">
+        <span>Авторский бабл-ти</span>
+        <span>400Р</span>
+    </div>
+
+</div>
+</div>
+
+<div class="slide">
+<img src="освеж.png">
+<div class="overlay"></div>
+
+<div class="content">
+<div class="category">ЛИМОНАДЫ</div>
+<h1>Освежающие напитки</h1>
+<p>Мохито • Ягодный • Цитрусовый • Манго</p>
+</div>
+<div class="menu">
+
+    <div class="item">
+        <span class="big">Лимонад</span>
+        <span class="big">350Р</span>
+    </div>
+
+    <div class="item">
+        <span class="big" class="big">Квас</span>
+        <span class="big">250Р</span>
+    </div>
+
+    
+
+</div>
+</div>
+
+<div class="slide">
+<img src="чай.png">
+<div class="overlay"></div>
+
+<div class="content">
+<div class="category">ЧАЙ</div>
+<h1>Чайная карта</h1>
+<p>Чёрный • Зелёный • Травяной • Фруктовый</p>
+</div>
+<div class="menu">
+
+    <div class="item">
+        <span  class="big">Чай чёрный (0,2 0,3 0,4)</span>
+        <span  class="big2">120P 150P 180P</span>
+    </div>
+
+    <div class="item">
+        <span  class="big">Чай зелёный (0,2 0,3 0,4)</span>
+        <span  class="big2">120P 150P 180P</span>
+    </div>
+
+    <div class="item">
+        <span class="big">Фруктово-ягодный чай </span>
+        <span  class="big2">250Р</span>
+    </div>
+
+
+</div>
+</div>
+
+<div class="slide">
+<img src="перекус.png">
+<div class="overlay"></div>
+
+<div class="content">
+<div class="category">СЭНДВИЧИ И СТРИТФУД</div>
+<h1>Быстрый перекус</h1>
+<p>Сэндвичи • Роллы • Хот-доги • Шаурма</p>
+</div>
+<div class="menu">
+
+    <div class="item">
+        <span class="big3">Сэндвич</span>
+        <span class="big3">350Р</span>
+    </div>
+
+    <div class="item">
+        <span class="big3">Цезарь-ролл </span>
+        <span class="big3">300Р</span>
+    </div>
+
+    <div class="item">
+        <span class="big3">Картошка фри</span>
+        <span class="big3">250Р</span>
+    </div>
+
+    <div class="item">
+        <span class="big3">Наггетсы (6 штук)</span>
+        <span class="big3">300Р</span>
+    </div>
+
+    <div class="item">
+        <span class="big3">Шаурма / BBQ</span>
+        <span class="big3">350P</span>
+    </div>
+
+    <div class="item">
+        <span class="big3">Хот-дог </span>
+        <span class="big3">300P</span>
+    </div>
+
+</div>
+
+</div>
+</div>
+
+<div class="slide">
+<img src="утро.png">
+<div class="overlay"></div>
+
+<div class="content">
+<div class="category">ЗАВТРАКИ И ДЕСЕРТЫ</div>
+<h1>Утреннее меню</h1>
+<p>Сырники • Чизкейк • Круассаны • Блины</p>
+</div>
+<div class="menu">
+
+    <div class="item">
+        <span class="big">Бельгийские- вафли</span>
+        <span class="big">300Р</span>
+    </div>
+
+    <div class="item">
+        <span class="big">Кукуруза</span>
+        <span class="big">300Р</span>
+    </div>
+
+    <div class="item">
+        <span class="big">Сладкая вата</span>
+        <span class="big">250Р</span>
+    </div>
+
+    <div class="item">
+        <span class="big">Чуррос</span>
+        <span class="big">350Р</span>
+    </div>
+
+</div>
+</div>
+
+<div class="slide">
+<img src="горячо.png">
+<div class="overlay"></div>
+
+<div class="content">
+<div class="category">ОСНОВНЫЕ БЛЮДА И ЗАКУСКИ</div>
+<h1>Горячая кухня</h1>
+<p>Паста • Салаты • Закуски • Горячие блюда</p>
+</div>
+<div class="menu">
+
+    
+
+    <div class="item">
+        <span>Картофель молодой (5 штук)</span>
+        <span>250Р</span>
+    </div>
+
+    <div class="item">
+        <span>Овощи-гриль</span>
+        <span>300Р</span>
+    </div>
+
+
+    <div class="item">
+        <span>Грибы-гриль(4 штуки)</span>
+        <span>250Р</span>
+    </div>
+
+    <div class="item">
+        <span>Овощная нарезка (огурцы, помидоры)</span>
+        <span>250Р</span>
+    </div>
+
+    <div class="item">
+        <span>Лаваш </span>
+        <span>60Р</span>
+    </div>
+
+    <div class="item">
+        <span>Соус на выбор (сырный, кетчуп, майонез, аджика, тартар  джем доп к чурос )</span>
+        <span>60Р</span>
+    </div>
+
+
+    <div class="item">
+        <span>Овощной салат</span>
+        <span>300Р</span>
+    </div>
+
+    <div class="item">
+        <span>Салат Цезарь</span>
+        <span>400Р</span>
+    </div>
+
+    <div class="item">
+        <span>Пицца (8 кусков)</span>
+        <span>600Р</span>
+    </div>
+
+    <div class="item">
+        <span>Шашлык (свинина 5 кусков)</span>
+        <span>600Р</span>
+    </div>
+
+
+    <div class="item">
+        <span>Шашлык (курица 5 кусков)</span>
+        <span>400Р</span>
+    </div>
+
+    <div class="item">
+        <span>Шашлык (баранина 3 куска) </span>
+        <span>700Р</span>
+    </div>
+
+    <div class="item">
+        <span>Куриные крылья (4 штуки)</span>
+        <span>400Р</span>
+    </div>
+
+    <div class="item">
+        <span>Люля-кебаб (курица)</span>
+        <span>400Р</span>
+    </div>
+
+    <div class="item">
+        <span>Люля-кебаб (баранина)</span>
+        <span>600Р</span>
+    </div>
+
+</div>
+</div>
+
+</div>
+
+<div class="progress">
+<div class="progress-bar"></div>
+</div>
+
+<script>
+
+const slides = document.querySelectorAll('.slide');
+const flash = document.querySelector('.flash');
+const progressBar = document.querySelector('.progress-bar');
+
+let current = 0;
+
+function showSlide(index){
+
+slides[current].classList.remove('active');
+
+current = index;
+
+if(current >= slides.length){
+current = 0;
+}
+
+if(current < 0){
+current = slides.length - 1;
+}
+
+flash.classList.add('active');
+
+setTimeout(()=>{
+flash.classList.remove('active');
+},400);
+
+slides[current].classList.add('active');
+
+progressBar.style.animation='none';
+
+setTimeout(()=>{
+progressBar.style.animation='progress 10s linear infinite';
+},20);
+
+}
+
+
+function nextSlide(){
+
+showSlide(current + 1);
+
+}
+
+function prevSlide(){
+
+showSlide(current - 1);
+
+}
+
+
+
+function updateClock(){
+
+const now = new Date();
+
+const h = String(now.getHours()).padStart(2,'0');
+const m = String(now.getMinutes()).padStart(2,'0');
+
+document.getElementById('clock').textContent =
+`${h}:${m}`;
+
+}
+
+updateClock();
+
+setInterval(updateClock,1000);
+
+let slider = setInterval(nextSlide,10000);
+
+document.querySelector('.next').addEventListener('click', () => {
+
+    nextSlide();
+
+    clearInterval(slider);
+    slider = setInterval(nextSlide, 10000);
+
+});
+
+document.querySelector('.prev').addEventListener('click', () => {
+
+    prevSlide();
+
+    clearInterval(slider);
+    slider = setInterval(nextSlide, 10000);
+
+});
+
+document.addEventListener('click',()=>{
+
+if(!document.fullscreenElement){
+
+document.documentElement.requestFullscreen();
+
+}
+
+},{once:true});
+
+</script>
+
+</body>
+</html>    
